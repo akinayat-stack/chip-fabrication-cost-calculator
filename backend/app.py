@@ -27,6 +27,7 @@ def murphy_yield(die_area_mm2: float, defect_density_per_cm2: float) -> float:
         return 1.0
     return ((1 - math.exp(-x)) / x) ** 2
 
+
 def bose_einstein_yield(die_area_mm2: float, defect_density_per_cm2: float) -> float:
     """
     Common clustering variant (alpha=1):
