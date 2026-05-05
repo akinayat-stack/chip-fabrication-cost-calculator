@@ -35,3 +35,15 @@ def bose_einstein_yield(die_area_mm2: float, defect_density_per_cm2: float) -> f
     """
     area_cm2 = die_area_mm2 / 100.0
     return 1.0 / (1.0 + defect_density_per_cm2 * area_cm2)
+
+
+def good_dies_per_wafer(wafer_diameter_mm: float, die_area_mm2: float, defect_density_per_cm2: float, model: str) -> float:
+    dpw = dies_per_wafer(wafer_diameter_mm, die_area_mm2)
+    y = murphy_yield(die_area_mm2, defect_density_per_cm2) if model == "murphy" else bose_einstein_yield(die_area_mm2, defect_density_per_cm2)
+    return dpw * y
+
+
+def cost_per_die(wafer_cost_usd: float, good_dies: float, packaging_cost_usd: float = 0.0, test_cost_usd: float = 0.0) -> float:
+    if good_dies <= 0:
+        return float("inf")
+    return wafer_cost_usd / good_dies + packaging_cost_usd + test_cost_usd
