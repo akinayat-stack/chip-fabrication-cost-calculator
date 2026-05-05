@@ -47,3 +47,29 @@ def cost_per_die(wafer_cost_usd: float, good_dies: float, packaging_cost_usd: fl
     if good_dies <= 0:
         return float("inf")
     return wafer_cost_usd / good_dies + packaging_cost_usd + test_cost_usd
+
+
+@app.post('/api/calculate')
+def calculate():
+    payload = request.get_json(force=True)
+
+    wafer_diameter = float(payload['waferDiameterMm'])
+    die_area = float(payload['dieAreaMm2'])
+    defect_density = float(payload['defectDensityPerCm2'])
+    wafer_cost = float(payload['waferCostUsd'])
+    packaging_cost = float(payload.get('packagingCostUsd', 0))
+    test_cost = float(payload.get('testCostUsd', 0))
+    model = payload.get('yieldModel', 'murphy').lower()
+
+    dpw = dies_per_wafer(wafer_diameter, die_area)
+    y = murphy_yield(die_area, defect_density) if model == 'murphy' else bose_einstein_yield(die_area, defect_density)
+    good_dies = dpw * y
+    cpd = cost_per_die(wafer_cost, good_dies, packaging_cost, test_cost)
+
+    return jsonify({
+        'diesPerWafer': dpw,
+        'yield': y,
+        'goodDiesPerWafer': good_dies,
+        'costPerDieUsd': cpd,
+        'yieldModelUsed': model
+    })
