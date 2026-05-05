@@ -111,3 +111,7 @@ def calculate():
         },
         'deltaUsd': mono_cost - chiplet_pkg_cost
     })
+
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
