@@ -73,3 +73,41 @@ def calculate():
         'costPerDieUsd': cpd,
         'yieldModelUsed': model
     })
+
+
+    @app.post('/api/compare-chiplet')
+    def compare_chiplet():
+        payload = request.get_json(force=True)
+
+    wafer_diameter = float(payload['waferDiameterMm'])
+    defect_density = float(payload['defectDensityPerCm2'])
+    wafer_cost = float(payload['waferCostUsd'])
+    yield_model = payload.get('yieldModel', 'murphy').lower()
+
+    mono_die_area = float(payload['monolithicDieAreaMm2'])
+
+    chiplet_die_area = float(payload['chipletDieAreaMm2'])
+    chiplets_per_package = int(payload['chipletsPerPackage'])
+    advanced_packaging_cost = float(payload.get('advancedPackagingUsd', 8.0))
+
+    mono_good = good_dies_per_wafer(wafer_diameter, mono_die_area, defect_density, yield_model)
+    mono_cost = cost_per_die(wafer_cost, mono_good, packaging_cost_usd=2.0, test_cost_usd=1.0)
+
+    chiplet_good = good_dies_per_wafer(wafer_diameter, chiplet_die_area, defect_density, yield_model)
+    chiplet_cost_each = cost_per_die(wafer_cost, chiplet_good)
+    chiplet_pkg_cost = chiplets_per_package * chiplet_cost_each + advanced_packaging_cost + 2.0
+
+    return jsonify({
+        'monolithic': {
+            'dieAreaMm2': mono_die_area,
+            'goodDiesPerWafer': mono_good,
+            'estimatedCostPerPackageUsd': mono_cost
+        },
+        'chiplet': {
+            'chipletAreaMm2': chiplet_die_area,
+            'chipletsPerPackage': chiplets_per_package,
+            'goodChipletsPerWafer': chiplet_good,
+            'estimatedCostPerPackageUsd': chiplet_pkg_cost
+        },
+        'deltaUsd': mono_cost - chiplet_pkg_cost
+    })
