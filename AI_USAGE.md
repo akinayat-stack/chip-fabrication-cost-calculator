@@ -1,12 +1,12 @@
 # AI Usage Log
 
-# AI Tools & Integration
+## AI Tools & Integration
 The development process was supported by specialized AI models to ensure high-performance code execution and rigorous technical documentation:
 
-- # Code Implementation:
+- ## Code Implementation:
  OpenAI Codex was utilized as the primary engine for architectural implementation, logic synthesis, and the development of the mathematical API.
 
-- # Technical Documentation: 
+- ## Technical Documentation: 
 Claude was leveraged for drafting professional technical specifications, refining the project's documentation, and structuring the final report.
 
 ## Prompt Sources
