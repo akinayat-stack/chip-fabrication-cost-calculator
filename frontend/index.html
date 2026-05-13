@@ -90,6 +90,34 @@
     .hint { color: var(--muted); font-size: .86rem; margin-top: .4rem; }
   </style>
 </head>
+<body>
+  <h1><i class="fas fa-cog" style="margin-right: 0.5rem; color: var(--accent);"></i>Chip Fabrication Cost Calculator</h1>
+  <div class="subtitle">Fast DPW + yield estimate with live wafer pass/fail simulation.</div>
+  <div class="grid">
+    <section class="panel">
+      <h2>Inputs</h2>
+      <label>Wafer Diameter (mm)<input id="waferDiameter" value="300" type="number"></label>
+      <label>Die Area (mm²)<input id="dieArea" value="120" type="number"></label>
+      <label>Defect Density (defects/cm²)<input id="defectDensity" value="0.2" step="0.01" type="number"></label>
+      <label>Wafer Cost (USD)<input id="waferCost" value="17000" type="number"></label>
+      <label>Yield Model
+        <select id="yieldModel">
+          <option value="murphy">Murphy</option>
+          <option value="bose">Bose-Einstein</option>
+        </select>
+      </label>
+      <button id="calcBtn"><i class="fas fa-rocket" style="margin-right: 0.4rem;"></i>Calculate</button>
+      <h3>Output</h3>
+      <div id="result">Run a calculation.</div>
+    </section>
+
+    <section class="panel">
+      <h2>Interactive Wafer Visualization</h2>
+      <canvas id="wafer" width="700" height="700"></canvas>
+      <p class="hint">Green = good dies, red = failed dies based on calculated yield probability.</p>
+    </section>
+  </div>
+  
 <script src="./main.js"></script>
 </body>
 </html>
